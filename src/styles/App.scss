@@ -1,0 +1,21 @@
+/* Base Application Styles */
+body {
+  color: #fff;
+  background: #ddd;
+}
+
+.platform{
+}
+.image-box{
+	position: absolute;
+	box-sizing:border-box;
+	left: 0;
+	top: 0;
+	padding:10px;
+	width: 210px;
+	background:#fff;
+	box-shadow: 2px 2px 1px #ccc;
+	img{
+		width: 100%;
+	}
+}
