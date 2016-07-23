@@ -90,11 +90,16 @@ var rangeRandom = function() {
     };
 
     class Image extends React.Component {
+    	constructor(props){
+    		super(props);
+    		this.handleHover = () => this.handleHover;
+    	}
     	state = {
     		position: {
     			left: '0px',
     			top: '0px'
-    		}
+    		},
+    		hoverClass:''
     	};
     	componentWillMount() {
     		var
@@ -108,15 +113,21 @@ var rangeRandom = function() {
     				top: isCenter ? range.t + 'px' : Math.floor(Math.random() * (range.b - range.t) + range.t) + 'px'
     			}
     		});
-    	}
+    	};
+    	handelHover(e){
+    		console.log('ok')
+    		this.setState({
+    			hoverClass:'hover'
+    		})
+    	} ;
     	render() {
     		return(
-    			<div>
-	    			<div className = "image-box"  style ={ this.state.position } >
+    			<div className = {"image-box  " + this.state.hoverClass } style ={ this.state.position }>
+	    			<div className = "forward"  onClick={this.handlerHover} >
 		    			<img src = { this.props.data.imgURL }  alt = {this.props.data.imgName}   />
 	    			</div>
-	    			<div className = "image-box-back">
-	    				<span>{this.props.data.imgName}</span>
+	    			<div className = "back">
+	    				<span className="name">{this.props.data.imgName}</span>
 	    			</div>
     			</div>
     			)

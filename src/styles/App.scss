@@ -1,7 +1,12 @@
 /* Base Application Styles */
+*{
+	margin:0;
+	padding:0;
+}
 body {
   color: #fff;
   background: #ddd;
+  font-family: 'Raleway Dots' , cursive;
 }
 
 .platform{
@@ -9,13 +14,43 @@ body {
 .image-box{
 	position: absolute;
 	box-sizing:border-box;
+	z-index:101;
 	left: 0;
 	top: 0;
 	padding:10px;
 	width: 210px;
-	background:#fff;
 	box-shadow: 2px 2px 1px #ccc;
-	img{
-		width: 100%;
+	transform-style:preserve-3d;
+	transform-origin:50% 50%;
+	transition: .3s all linear;
+	&.hover{
+			transform:rotateY(180deg);
 	}
+	.forward{
+		position: relative;
+		width: 100%;
+		background:#fff;
+		img{
+			width: 100%;
+		}
+	}
+	.back{
+		position: absolute;
+		left: 0;
+		right:0;
+		top:0;
+		bottom:0;
+		background:#fff;
+		text-align:center;
+		transform-origin: 50% 50%;
+		transform: rotateY(180deg);
+		box-shadow: 2px 2px 1px #ccc;
+		.name{
+			display: inline-block;
+			margin-top:40%;
+			vertical-align: middle;
+			color:#000;
+		}
+	}
+
 }
