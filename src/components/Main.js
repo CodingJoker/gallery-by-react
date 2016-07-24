@@ -63,43 +63,93 @@ var rangeRandom = function() {
     		top: Math.floor(Math.random() * (range.b - range.t) + range.t)
     	}
     	return position;
+    },
+    //旋转随机函数❤️
+    degRandom = function(){
+    	return Math.floor(10 - Math.random() * 20);
     }
     class AppComponent extends React.Component {
+    	constructor(props){
+    		super(props);
+    		this.changeCenterImage = this.changeCenterImage.bind(this);
+    		this.imageRandom = this.imageRandom.bind(this);
+    	}
+    	state={
+    		imageArr :[]
+    	};
     	componentWillMount() {
-    		var
-    		centerImageIndex = Math.floor(Math.random() * imageArr.length),
-    		centerImage = imageArr[centerImageIndex]
+		this.setState({
+					imageArr:this.imageRandom()
+				},function(){
+					console.log("centerImage: "+ this.state.centerImageIndex);
+		});
+	};
+	render() {
+	    	return (
+	    		 <div className = "platform">
+	    		 	<ImageBox imageArr={this.state.imageArr} changeCenterImage={this.changeCenterImage} />
+	    		 </div>
+	    		);
+	    	};
+	imageRandom(index){
+	    var
+		centerImageIndex = index ||  Math.floor(Math.random() * imageArr.length),
+		centerImage = imageArr[centerImageIndex]
 
-    		imageArr.splice(centerImageIndex, 1);
-    		centerImage.range = 'center';
-        //获取随机分区
-        for (var i = 0, j = imageArr.length; i < j; i++) {
-        	imageArr[i].range = rangeRandom();
-        };
-        imageArr.splice(centerImageIndex, 0, centerImage);
+		imageArr.splice(centerImageIndex, 1);
+		centerImage.range = 'center';
+    		    //获取随机分区
+	    	    for (var i = 0, j = imageArr.length; i < j; i++) {
+	    	    	imageArr[i].range = rangeRandom();
+	    	    };
+	    	    imageArr.splice(centerImageIndex, 0, centerImage);
+	    	    return imageArr;
+
+	};
+	changeCenterImage(index){
+		var tempArr = this.imageRandom(index);
+		console.log(tempArr);
+		this.setState({
+			imageArr:tempArr
+		},function(){
+			console.log(this.state.imageArr)
+		});
+	}
     };
-    render() {
-    	return (
-    		 < div className = "platform" > {
-    		imageArr.map((image, key) => < Image data = { image }
-    			key = { key }
-    			/>)
-    		} < /div>
-    		);
+
+    class ImageBox extends React.Component{
+    	render(){
+    		return (
+    				<div>
+	    				{
+						this.props.imageArr.map((image, key) => <Image data = { image }
+			    			key = { key } index= {key} changeCenterImage = {this.props.changeCenterImage}
+			    			/>)
+		    			}
+	    			</div>
+    			)
     	}
     };
 
     class Image extends React.Component {
     	constructor(props){
     		super(props);
-    		this.handleHover = () => this.handleHover;
+    		this.handelForwardClick =  this.handelForwardClick.bind(this);
+    		this.handelBackClick = this.handelBackClick.bind(this);
     	}
     	state = {
     		position: {
     			left: '0px',
-    			top: '0px'
+    			top: '0px',
+    			transform:'rotateZ(30deg)'
     		},
-    		hoverClass:''
+    		hoverClass:'',
+    		forwardCtrl:{
+    			display:'block'
+    		},
+    		backCtrl:{
+    			display:'none'
+    		}
     	};
     	componentWillMount() {
     		var
@@ -110,24 +160,46 @@ var rangeRandom = function() {
     		this.setState({
     			position: {
     				left: isCenter ? range.l + 'px' : Math.floor(Math.random() * (range.r - range.l) + range.l) + 'px',
-    				top: isCenter ? range.t + 'px' : Math.floor(Math.random() * (range.b - range.t) + range.t) + 'px'
+    				top: isCenter ? range.t + 'px' : Math.floor(Math.random() * (range.b - range.t) + range.t) + 'px',
+    				transform:isCenter ? '' : 'rotateZ('+degRandom()+'deg)'
     			}
     		});
     	};
-    	handelHover(e){
-    		console.log('ok')
-    		this.setState({
-    			hoverClass:'hover'
-    		})
+    	handelForwardClick(e){
+    		if(this.props.data.range != 'center'){
+    			console.log(this.props.index);
+    			this.props.changeCenterImage(this.props.index);
+    		}else{
+    			this.setState({
+	    			hoverClass:'hover',
+	    			backCtrl:{
+	    				display:'block'
+	    			},
+	    			forward:{
+	    				display:'none'
+	    			}
+    			})
+    		}
     	} ;
+    	handelBackClick(e){
+    		this.setState({
+    			hoverClass:'',
+    			backCtrl:{
+    				display:'none'
+    			},
+    			forward:{
+    				display:'block'
+    			}
+    		});
+    	};
     	render() {
     		return(
     			<div className = {"image-box  " + this.state.hoverClass } style ={ this.state.position }>
-	    			<div className = "forward"  onClick={this.handlerHover} >
-		    			<img src = { this.props.data.imgURL }  alt = {this.props.data.imgName}   />
-	    			</div>
-	    			<div className = "back">
+	    			<div className = "back"  style={this.state.backCtrl} onClick={this.handelBackClick}>
 	    				<span className="name">{this.props.data.imgName}</span>
+	    			</div>
+	    			<div className = "forward" style={this.state.forwardCtrl}  onClick={this.handelForwardClick} >
+		    			<img src = { this.props.data.imgURL }  alt = {this.props.data.imgName}   />
 	    			</div>
     			</div>
     			)
