@@ -11,6 +11,7 @@ body {
 }
 
 .platform{
+	perspective: 1000px;
 }
 .image-box{
 	position: absolute;
@@ -22,10 +23,10 @@ body {
 	background:#fff;
 	box-shadow: 2px 2px 1px #ccc;
 	transform-style:preserve-3d;
-	transform-origin:50% 50%;
-	transition: .3s all linear;
-	&.hover{
-			transform:rotateY(180deg);
+	transform-origin:0 50% 0 ;
+           transition: transform .6s ease-in-out, left .6s ease-in-out, top .6s ease-in-out;
+	&.inverse{
+			transform: translate(160px) rotateY(180deg);
 	}
 	.forward{
 		position: relative;
@@ -34,10 +35,10 @@ body {
 		img{
 			width: 100%;
 		}
+		-webkit-backface-visibility: hidden;
 	}
 	.back{
 		position: absolute;
-		display: none;
 		left: 0;
 		right:0;
 		top:0;
@@ -45,7 +46,7 @@ body {
 		background:#fff;
 		text-align:center;
 		transform-origin: 50% 50%;
-		transform: rotateY(180deg);
+		transform: rotateY(180deg) translateZ(1px);
 		box-shadow: 2px 2px 1px #ccc;
 		.name{
 			display: inline-block;

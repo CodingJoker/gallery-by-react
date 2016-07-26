@@ -1,8 +1,6 @@
 require('normalize.css/normalize.css');
 require('styles/App.scss');
-
 import React from 'react';
-
 let imageArr = require('json/image.json');
 imageArr = (function getImageUrl(imageDataArr) {
 	for (var i = 0, j = imageDataArr.length; i < j; i++) {
@@ -14,42 +12,6 @@ imageArr = (function getImageUrl(imageDataArr) {
 }(imageArr));
 
 var
-platformW = window.screen.availWidth,
-platformH = window.screen.availHeight,
-imgTemp = document.getElementsByTagName("img")[0],
-imgW = 210,
-imgH = 227,
-positionRange = {
-        //分区范围
-        leftTop: {
-        	l: 0,
-        	r: platformW/ 2 - imgW,
-        	t: 10,
-        	b: platformH / 2 - imgH  * 1.5
-        },
-        rightTop: {
-        	l: platformW / 2  + imgW,
-        	r: platformW - imgW,
-        	t: 10,
-        	b: platformH / 2 - imgH * 1.5
-        },
-        leftBottom: {
-        	l: 0,
-        	r: platformW / 2 - imgW,
-        	t: platformH / 2  + imgH / 2,
-        	b: platformH - imgH *  2
-        },
-        rightBottom: {
-        	l: platformW /2  + imgW,
-        	r: platformW - imgW ,
-        	t: platformH / 2 + imgH / 2,
-        	b: platformH - imgH  * 2
-        },
-        center: {
-        	l: (platformW - imgW) / 2,
-        	t: (platformH - imgH) / 2
-        }
-    },
     rangeRandomHock = ['leftTop', 'rightTop', 'leftBottom', 'rightBottom'];
 //分区随机函数
 var rangeRandom = function() {
@@ -73,24 +35,65 @@ var rangeRandom = function() {
     		super(props);
     		this.changeCenterImage = this.changeCenterImage.bind(this);
     		this.imageRandom = this.imageRandom.bind(this);
+    		this.centerInverse = this.centerInverse.bind(this);
     	}
     	state={
     		imageArr :[]
     	};
-    	componentWillMount() {
+    	constant={
+    	};
+    	componentDidMount() {
+    		this.constant.platformW = window.screen.availWidth;
+    		this.constant.platformH = window.screen.availHeight;
+
+    		this.constant.imgW = 210;
+    		this.constant.imgH = 280;
+    		this.constant.positionRange = {
+    		        //分区范围
+    		        leftTop: {
+    		        	l: 0,
+    		        	r: this.constant.platformW/ 2 - this.constant.imgW,
+    		        	t: 10,
+    		        	b: this.constant.platformH / 2 - this.constant.imgH  * 1.5
+    		        },
+    		        rightTop: {
+    		        	l: this.constant.platformW / 2  + this.constant.imgW,
+    		        	r: this.constant.platformW - this.constant.imgW,
+    		        	t: 10,
+    		        	b: this.constant.platformH / 2 - this.constant.imgH * 1.5
+    		        },
+    		        leftBottom: {
+    		        	l: 0,
+    		        	r: this.constant.platformW / 2 - this.constant.imgW,
+    		        	t: this.constant.platformH / 2  + this.constant.imgH / 2,
+    		        	b: this.constant.platformH - this.constant.imgH *  2
+    		        },
+    		        rightBottom: {
+    		        	l: this.constant.platformW /2  + this.constant.imgW,
+    		        	r: this.constant.platformW - this.constant.imgW ,
+    		        	t: this.constant.platformH / 2 + this.constant.imgH / 2,
+    		        	b: this.constant.platformH - this.constant.imgH  * 2
+    		        },
+    		        center: {
+    		        	l: (this.constant.platformW - this.constant.imgW) / 2,
+    		        	t: (this.constant.platformH - this.constant.imgH) / 2
+    		        }
+    		    };
 		this.setState({
 					imageArr:this.imageRandom()
-				},function(){
-					console.log("centerImage: "+ this.state.centerImageIndex);
-		});
+				});
 	};
 	render() {
+			var images = this.state.imageArr.map((image, key) => <Image data = { image }
+    			key = { key } index= {key} changeCenterImage = {this.changeCenterImage}
+    			 centerInverse = {this.centerInverse}  ref={'image'+key}/>)
 	    	return (
 	    		 <div className = "platform">
-	    		 	<ImageBox imageArr={this.state.imageArr} changeCenterImage={this.changeCenterImage} />
+	    		 	{images}
 	    		 </div>
 	    		);
 	    	};
+
 	imageRandom(index){
 	    var
 		centerImageIndex = index ||  Math.floor(Math.random() * imageArr.length),
@@ -98,9 +101,21 @@ var rangeRandom = function() {
 
 		imageArr.splice(centerImageIndex, 1);
 		centerImage.range = 'center';
+		centerImage.position={
+			left:this.constant.positionRange['center'].l,
+			top:this.constant.positionRange['center'].t,
+			'zIndex': '101',
+			'isInverse':false
+		};
     		    //获取随机分区
 	    	    for (var i = 0, j = imageArr.length; i < j; i++) {
 	    	    	imageArr[i].range = rangeRandom();
+	    	    	var range = this.constant.positionRange[imageArr[i].range];
+	    	    	imageArr[i].position = {
+	    	    		left:Math.floor(Math.random() * (range.r - range.l) + range.l) + 'px',
+	    	    		top:Math.floor(Math.random() * (range.b - range.t) + range.t) + 'px',
+    				transform:'rotateZ('+degRandom()+'deg)',
+	    	    	};
 	    	    };
 	    	    imageArr.splice(centerImageIndex, 0, centerImage);
 	    	    return imageArr;
@@ -108,28 +123,19 @@ var rangeRandom = function() {
 	};
 	changeCenterImage(index){
 		var tempArr = this.imageRandom(index);
-		console.log(tempArr);
 		this.setState({
 			imageArr:tempArr
-		},function(){
-			console.log(this.state.imageArr)
-		});
-	}
+		},);
+	};
+	centerInverse(index){
+		var tempArr = this.state.imageArr;
+		tempArr[index].isInverse = ! tempArr[index].isInverse;
+		this.setState({
+			imageArr:tempArr
+		})
+	};
     };
 
-    class ImageBox extends React.Component{
-    	render(){
-    		return (
-    				<div>
-	    				{
-						this.props.imageArr.map((image, key) => <Image data = { image }
-			    			key = { key } index= {key} changeCenterImage = {this.props.changeCenterImage}
-			    			/>)
-		    			}
-	    			</div>
-    			)
-    	}
-    };
 
     class Image extends React.Component {
     	constructor(props){
@@ -137,68 +143,27 @@ var rangeRandom = function() {
     		this.handelForwardClick =  this.handelForwardClick.bind(this);
     		this.handelBackClick = this.handelBackClick.bind(this);
     	}
-    	state = {
-    		position: {
-    			left: '0px',
-    			top: '0px',
-    			transform:'rotateZ(30deg)'
-    		},
-    		hoverClass:'',
-    		forwardCtrl:{
-    			display:'block'
-    		},
-    		backCtrl:{
-    			display:'none'
-    		}
-    	};
-    	componentWillMount() {
-    		var
-    		rangeName = this.props.data.range,
-    		range = positionRange[rangeName],
-    		isCenter = rangeName == 'center';
 
-    		this.setState({
-    			position: {
-    				left: isCenter ? range.l + 'px' : Math.floor(Math.random() * (range.r - range.l) + range.l) + 'px',
-    				top: isCenter ? range.t + 'px' : Math.floor(Math.random() * (range.b - range.t) + range.t) + 'px',
-    				transform:isCenter ? '' : 'rotateZ('+degRandom()+'deg)'
-    			}
-    		});
-    	};
     	handelForwardClick(e){
     		if(this.props.data.range != 'center'){
-    			console.log(this.props.index);
     			this.props.changeCenterImage(this.props.index);
     		}else{
-    			this.setState({
-	    			hoverClass:'hover',
-	    			backCtrl:{
-	    				display:'block'
-	    			},
-	    			forward:{
-	    				display:'none'
-	    			}
-    			})
+    			this.props.centerInverse(this.props.index);
     		}
     	} ;
     	handelBackClick(e){
-    		this.setState({
-    			hoverClass:'',
-    			backCtrl:{
-    				display:'none'
-    			},
-    			forward:{
-    				display:'block'
-    			}
-    		});
+    		this.props.centerInverse(this.props.index);
     	};
     	render() {
+    		var
+    			position =  this.props.data.position,
+    			inverse =  this.props.data.range== 'center' && this.props.data.isInverse ? 'inverse' : '' ;
     		return(
-    			<div className = {"image-box  " + this.state.hoverClass } style ={ this.state.position }>
-	    			<div className = "back"  style={this.state.backCtrl} onClick={this.handelBackClick}>
+    			<div className = {"image-box  " + inverse }  style ={ position }>
+	    			<div className = "back"   onClick={this.handelBackClick}>
 	    				<span className="name">{this.props.data.imgName}</span>
 	    			</div>
-	    			<div className = "forward" style={this.state.forwardCtrl}  onClick={this.handelForwardClick} >
+	    			<div className = "forward"   onClick={this.handelForwardClick} >
 		    			<img src = { this.props.data.imgURL }  alt = {this.props.data.imgName}   />
 	    			</div>
     			</div>
