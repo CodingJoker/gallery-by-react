@@ -49,7 +49,7 @@ var rangeRandom = function() {
     		this.constant.imgW = 210;
     		this.constant.imgH = 280;
     		this.constant.positionRange = {
-    		        //分区范围
+    		        //分区范围  一共5个分区
     		        leftTop: {
     		        	l: 0,
     		        	r: this.constant.platformW/ 2 - this.constant.imgW,
@@ -102,7 +102,11 @@ var rangeRandom = function() {
 	    		 </div>
 	    		);
 	    	};
-
+	 /**
+	  * 图片位置随机函数
+	  * @param  {number} index 图片的索引
+	  * @return {arr}       图片数组
+	  */
 	imageRandom(index){
 	    var
 		centerImageIndex = index ||  Math.floor(Math.random() * imageArr.length),
@@ -130,12 +134,20 @@ var rangeRandom = function() {
 	    	    return imageArr;
 
 	};
+	/**
+	 * 将不在中心位置的图片设置成中心图片
+	 * @param  {number} index 图片的索引
+	 */
 	changeCenterImage(index){
 		var tempArr = this.imageRandom(index);
 		this.setState({
 			imageArr:tempArr
 		},);
 	};
+	/**
+	 * 中心图片的反转操作
+	 * @param  {[number]} index 图片的索引
+	 */
 	centerInverse(index){
 		var tempArr = this.state.imageArr;
 		tempArr[index].isInverse = ! tempArr[index].isInverse;
@@ -145,14 +157,18 @@ var rangeRandom = function() {
 	};
     };
 
-
+    /**
+     * 图片组件
+     */
     class Image extends React.Component {
     	constructor(props){
     		super(props);
     		this.handelForwardClick =  this.handelForwardClick.bind(this);
     		this.handelBackClick = this.handelBackClick.bind(this);
     	}
-
+    	/*
+    	＊点击图片正面的操作
+    	 */
     	handelForwardClick(e){
     		if(this.props.data.range != 'center'){
     			this.props.changeCenterImage(this.props.index);
@@ -160,6 +176,9 @@ var rangeRandom = function() {
     			this.props.centerInverse(this.props.index);
     		}
     	} ;
+    	/**
+    	 * 点击图片背面的操作
+    	 */
     	handelBackClick(e){
     		this.props.centerInverse(this.props.index);
     	};
@@ -180,6 +199,9 @@ var rangeRandom = function() {
     		}
     	};
 
+    	/**
+    	 * app下面的控制条
+    	 */
         class NavIcon extends React.Component{
             constructor(props){
                 super(props);
