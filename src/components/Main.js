@@ -66,13 +66,13 @@ var rangeRandom = function() {
     		        	l: 0,
     		        	r: this.constant.platformW / 2 - this.constant.imgW,
     		        	t: this.constant.platformH / 2  + this.constant.imgH / 2,
-    		        	b: this.constant.platformH - this.constant.imgH *  2
+    		        	b: this.constant.platformH - this.constant.imgH *  3
     		        },
     		        rightBottom: {
     		        	l: this.constant.platformW /2  + this.constant.imgW,
     		        	r: this.constant.platformW - this.constant.imgW ,
     		        	t: this.constant.platformH / 2 + this.constant.imgH / 2,
-    		        	b: this.constant.platformH - this.constant.imgH  * 2
+    		        	b: this.constant.platformH - this.constant.imgH  * 3
     		        },
     		        center: {
     		        	l: (this.constant.platformW - this.constant.imgW) / 2,
@@ -84,12 +84,21 @@ var rangeRandom = function() {
 				});
 	};
 	render() {
-			var images = this.state.imageArr.map((image, key) => <Image data = { image }
+			var imagesAndNavIcon = this.state.imageArr.map((image, key) =>
+                                <Image data = { image }
     			key = { key } index= {key} changeCenterImage = {this.changeCenterImage}
-    			 centerInverse = {this.centerInverse}  ref={'image'+key}/>)
+    			 centerInverse = {this.centerInverse}  ref={'image'+key}/>
+                            )
+                                var navIcons = this.state.imageArr.map((image,key) =>
+                                    <NavIcon data={image} key={key} changeCenterImage = {this.changeCenterImage}
+                                    centerInverse = {this.centerInverse}  index={key}/>
+                                )
 	    	return (
 	    		 <div className = "platform">
-	    		 	{images}
+	    		 	{imagesAndNavIcon}
+                                        <div className="ctrl-bar">
+                                         {navIcons}
+                                        </div>
 	    		 </div>
 	    		);
 	    	};
@@ -171,7 +180,24 @@ var rangeRandom = function() {
     		}
     	};
 
-
+        class NavIcon extends React.Component{
+            constructor(props){
+                super(props);
+                this.handleClick = this.handleClick.bind(this);
+            };
+            handleClick(e){
+            	if(this.props.data.range == 'center')
+            	      this.props.centerInverse(this.props.index);
+                	else
+                	      this.props.changeCenterImage(this.props.index);
+            }
+            render(){
+                var reset = this.props.data.range == 'center' ? 'center-nav' : '';
+                return (
+                        <span className={"nav-icon "+ reset} onClick={this.handleClick}></span>
+                    )
+            }
+        };
 
 
 

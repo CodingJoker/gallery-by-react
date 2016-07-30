@@ -11,7 +11,42 @@ body {
 }
 
 .platform{
+	position: relative;
 	perspective: 1000px;
+	height:100vh;
+	.ctrl-bar{
+		$h:30px;
+		position: absolute;
+		width: 100%;
+		bottom:50px;
+		left: 0;
+		box-sizing:border-box;
+		height:$h;
+		z-index:200;
+		padding:0 10%;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items:center;
+		.nav-icon{
+			$navH : $h /3*2;
+			cursor:pointer;
+			display: inline-block;
+			width: $navH;
+			height: $navH;
+			border-radius:$navH / 2;
+			background:#fff;
+			margin: 0 3px;
+			transition:transform .3s ease-in-out margin .3s ease-in-out;
+			&.center-nav{
+				transform: scale(1.2);
+				margin:0 5px;
+				background:#fff url(../images/back.png) no-repeat center center;
+				background-size: 90%;
+
+			}
+		}
+	}
 }
 .image-box{
 	position: absolute;
