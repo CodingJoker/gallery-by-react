@@ -11,5 +11,5 @@
 
 ###Use the cmds above can run my react demo 
 
-#Demo:
+### [Demo](https://codingjoker.github.io/gallery-by-react/):
   ![image](https://github.com/CodingJoker/gallery-by-react/raw/master/src/images/example.png)
