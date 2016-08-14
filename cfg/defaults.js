@@ -43,7 +43,7 @@ function getDefaultModules() {
 }
 module.exports = {
   srcPath: srcPath,
-  publicPath: '/assets/',
+  publicPath: 'https://github.com/CodingJoker/gallery-by-react/raw/gh-pages/assets/',
   port: dfltPort,
   getDefaultModules: getDefaultModules,
   postcss: function () {
